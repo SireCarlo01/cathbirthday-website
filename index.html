@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>A Special Surprise!</title>
+</head>
+<body>
+
+  <div class="heart" style="left: 10%; font-size: 20px; animation-duration: 7s;">❤️</div>
+  <div class="heart" style="left: 30%; font-size: 30px; animation-duration: 5s;">💖</div>
+  <div class="heart" style="left: 60%; font-size: 25px; animation-duration: 8s;">💕</div>
+  <div class="heart" style="left: 80%; font-size: 35px; animation-duration: 6s;">✨</div>
+
+  <div class="card" id="mainCard">
+    <h1 id="heading">Happiest Birthday Asawa ko!!! 💕</h1>
+    <p id="question">Do You Love Me?</p>
+
+    <div class="btn-container">
+      <button id="yesBtn" onclick="celebrate()">Yes!</button>
+      <button id="noBtn" onmouseenter="dodgeNoButton(event)" onclick="dodgeNoButton(event)" ontouchstart="dodgeNoButton(event)">No</button>
+    </div>
+  </div>
+
+  <script>
+    const videoList = [
+      "video1.mp4",
+      "video2.mp4",
+      "video3.mp4",
+      "video4.mp4",
+      "video5.mp4",
+      "video6.mp4",
+      "video7.mp4"
+    ];
+    let currentVideoIndex = 0;
+    let dodgeCount = 0;
+
+    // Fixed set of offsets (X, Y) so the button moves reliably within card bounds
+    const dodgePositions = [
+      { x: -80, y: -60 },
+      { x: 80, y: 50 },
+      { x: -70, y: 60 },
+      { x: 70, y: -50 },
+      { x: -90, y: 0 }
+    ];
+
+    function dodgeNoButton(e) {
+      if (e && e.type === 'touchstart') {
+        e.preventDefault();
+      }
+
+      const noBtn = document.getElementById('noBtn');
+
+      // Convert into "Yes!" on the 6th interaction
+      if (dodgeCount >= 5) {
+        noBtn.innerText = "Yes! 💕";
+        noBtn.style.backgroundColor = "#ff4b2b";
+        noBtn.style.transform = "translate(0px, 0px)";
+        noBtn.onclick = celebrate;
+        noBtn.onmouseenter = null;
+        noBtn.ontouchstart = null;
+        return;
+      }
+
+      // Apply the pre-calculated safe offset relative to its original position
+      const pos = dodgePositions[dodgeCount];
+      noBtn.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+
+      dodgeCount++;
+    }
+
+    function celebrate() {
+      const card = document.getElementById('mainCard');
+      card.innerHTML = `
+        <h1>YAY! I LOVE YOU! 🎉</h1>
+        <p>I knew you'd say yes! Get ready for a wonderful time together ❤️</p>
+        <div style="font-size: 40px; margin-bottom: 20px;">🥰🥂✨</div>
+        <button class="surprise-btn" onclick="openVideoPage()">Ready ka na? Click mo pag ready ka na. 😘 </button>
+      `;
+    }
+
+    function openVideoPage() {
+      const card = document.getElementById('mainCard');
+      card.classList.add('wide-card');
+
+      card.innerHTML = `
+        <h1>Happy Birthday Asawa Ko! 🎂✨</h1>
+        <p>Here are some special messages for you...</p>
+        
+        <div class="video-container">
+          <video id="slideshowVideo" controls autoplay loop muted>
+            <source id="videoSource" src="${videoList[0]}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="nav-controls">
+          <button class="nav-btn" onclick="prevVideo()">⬅️ Previous</button>
+          <span id="videoTracker" style="color: #d63384; font-weight: bold; font-size: 1.1rem;">1 / ${videoList.length}</span>
+          <button class="nav-btn" onclick="nextVideo()">Next Video ➡️</button>
+        </div>
+      `;
+    }
+
+    function nextVideo() {
+      currentVideoIndex = (currentVideoIndex + 1) % videoList.length;
+      updateVideo();
+    }
+
+    function prevVideo() {
+      currentVideoIndex = (currentVideoIndex - 1 + videoList.length) % videoList.length;
+      updateVideo();
+    }
+
+    function updateVideo() {
+      const videoPlayer = document.getElementById('slideshowVideo');
+      const videoSource = document.getElementById('videoSource');
+      const tracker = document.getElementById('videoTracker');
+
+      videoSource.src = videoList[currentVideoIndex];
+      videoPlayer.load();
+      videoPlayer.play();
+      tracker.innerText = `${currentVideoIndex + 1} / ${videoList.length}`;
+    }
+  </script>
+</body>
+</html>
